@@ -13,15 +13,29 @@ def checkAnalysisText(text):
         print("checkAnalysisText - Это не текст")
 
 
-#Метод разбивает строку на слова и возвращает список найденых слов
+#Метод разбивает строку на слова и возвращает словарь найденых слов с их индексами в строке
+#{'Слова':[(начальный индекс вхождения 1, конечный индекс вхождения 1),(начальный индекс вхождения 2, конечный индекс вхождения 2),...]}
 def getWordsFromString(text):
-    #result = re.split('[\.|,|-|\s|\(|\)|\{|\}|\]|\]|:|;|\<|\>|\'|\"]+', text)
-    result = [x for x in re.split('[\W]+', text) if not re.match('\d+',x)]
-    return result
+    #Убирает лишние символы и сдвигает индексы соответственно
+    def temp(tp):
+        r = re.finditer('\w+',tp[2])
+        s = next(r)
+        return (tp[0]+s.start(0), tp[0]+s.start(0)+(s.end(0)-s.start(0)), s.group(0))
+
+    tmp ={}
+    for m in re.finditer('[\W|\s]?(\w+)[\W|\s]?', text):
+        w = temp((m.start(0), m.end(0), m.group(0)))
+        if w[2] in tmp.keys():
+            tmp[w[2]].append((w[0],w[1]))
+        else:
+            tmp[w[2]]=[(w[0],w[1])]
+
+    return tmp
 
 
 #Метод ищет вхождения слова в строке. return ('Cлово',[позиция в строке 1, позиция в строке 2, ....])
 def searchWord(word, s):
+    """
     i=0
     lst = []
     while(i!=-1):
@@ -30,5 +44,6 @@ def searchWord(word, s):
             lst.append(i)
         else:
             continue
+    """
 
-    return (word, lst)
+    return [(m.start(0), m.end(0)) for m in re.finditer('[\s]+'+word+'[\s]+', s)]
