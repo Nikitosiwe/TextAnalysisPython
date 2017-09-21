@@ -27,20 +27,15 @@ def searchButton_click():
     if not checkAnalysisText(searchText):
         return
 
+    #Слова которые ищут
     searchWords = getWordsFromString(searchText)
     if len(searchWords)<1: return
 
+    #Все слова текста
     words = getWordsFromString(analysisText)
 
-    print(searchWord(searchWords[0], analysisText))
-
-    #result = list(set(worlds) & set(searchWorlds))
-    #print(result)
-    #print(getWorldsFromString(analysisText))
-
-
-
-    print('Text')
+    #Найденные слова
+    detectedWords = {k:words[k] for k in searchWords.keys() if k in words.keys() }
 
 
 #Подключение методов к кнопкам
