@@ -1,4 +1,5 @@
 import re
+import pymorphy2 as pym
 
 #Метод принимает текст (который подлжежит анализу). И проверяет его корректность
 #для дальнейшей работы с ним. Например текст не должен состоять из одних пробелов,
@@ -47,3 +48,60 @@ def searchWord(word, s):
     """
 
     return [(m.start(0), m.end(0)) for m in re.finditer('[\s]+'+word+'[\s]+', s)]
+
+
+#Метод выделяет из списка слов значемые (существительные)
+# и стоп слова (Союзы, Местоимения, Предлоги, Частицы, Междометия, Цифры)
+# и иностранные слова
+def getMorphWords(words):
+    znach =[]
+    Nznach=[]
+    ltn =[]
+    morph = pym.MorphAnalyzer()
+    for w in words:
+        if 'NOUN' in morph.parse(w)[0].tag:
+            znach.append(w)
+        elif ('CONJ' or 'NPRO' or 'PREP' or 'PRCL' or 'INTJ' or  'NUMR') in morph.parse(w)[0].tag:
+            Nznach.append(w)
+        elif None == morph.parse(w)[0].tag.POS:
+            ltn.append(w)
+    return (znach, Nznach, ltn)
+
+# Метод возвращает все аналитические параметры текста
+def analysisText(text):
+    words = getWordsFromString(text)
+
+    #Количество символов
+    symbol_count = len(text)
+
+    #Количество символов без пробелов
+    symbol_count_2 =len(re.sub('\s+','',text))
+
+    #Количество слов
+    word_count = sum([len(x) for x in words.values()])
+
+    #Количество букв
+    letter_count = sum([len(w) for w in words.keys()])
+
+    #Количество уникальных слов
+    word_count_2 = len(words.keys())
+
+    morphWords = getMorphWords(words)
+
+    #количество значимых слов
+    word_count_3 = len(morphWords[0])
+
+    #Количество стоп-слов
+    word_count_4 = len(morphWords[1])
+
+    try:
+        #Водность текста
+        water = sum([len(words[mw]) for mw in morphWords[1]]) / sum([len(words[mw]) for mw in morphWords[0]]) * 100
+    except ZeroDivisionError:
+        water = 100
+
+    #Количество иностранных слов
+    ltn_count = len(morphWords[2])
+
+
+    return (symbol_count, symbol_count_2, word_count, letter_count, word_count_2, word_count_3, word_count_4, water, ltn_count)
