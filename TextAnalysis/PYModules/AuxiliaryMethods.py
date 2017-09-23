@@ -105,14 +105,29 @@ def analysisText(text):
         water = 100
 
 
+
     #Количество знаков пунктуации
     punctuation_count = len([x for x in text if re.match('[^\w\s\d]',x)])
 
-    #Классическая тошнота текста
-    classicText_nausea = round(cmath.sqrt(sorted([(x,len(words[x])) for x in morphWords[0]], key=lambda item: item[1], reverse=True)[0][1]).real,2)
+    #Значимые слова отсортированные по количеству
+    ZnachWord = sorted([(x, len(words[x])) for x in morphWords[0]], key=lambda item: item[1], reverse=True)
 
-    #Академическая тошнота текста
-    academicianText_nausea = round(sorted([(x,len(words[x])) for x in morphWords[0]], key=lambda item: item[1], reverse=True)[0][1] / word_count * 100, 2)
+
+
+
+    try:
+         #= 0#round(cmath.sqrt(sorted([(x,len(words[x])) for x in morphWords[0]], key=lambda item: item[1], reverse=True)[0][1]).real,2)
+        if len(ZnachWord)>0:
+            # Классическая тошнота текста
+            classicText_nausea = round(cmath.sqrt(ZnachWord[0][1]).real, 2)
+            # Академическая тошнота текста
+            academicianText_nausea = round(ZnachWord[0][1] / word_count * 100, 2)
+        else:
+            classicText_nausea = 0
+            academicianText_nausea=0
+    except Exception as ex:
+        print(ex)
+
 
     return (symbol_count, symbol_count_2, word_count, letter_count,
             word_count_2, word_count_3, word_count_4, water, ltn_count,
