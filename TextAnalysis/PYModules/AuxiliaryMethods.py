@@ -104,16 +104,11 @@ def analysisText(text):
     except ZeroDivisionError:
         water = 100
 
-
-
     #Количество знаков пунктуации
     punctuation_count = len([x for x in text if re.match('[^\w\s\d]',x)])
 
     #Значимые слова отсортированные по количеству
     ZnachWord = sorted([(x, len(words[x])) for x in morphWords[0]], key=lambda item: item[1], reverse=True)
-
-
-
 
     try:
          #= 0#round(cmath.sqrt(sorted([(x,len(words[x])) for x in morphWords[0]], key=lambda item: item[1], reverse=True)[0][1]).real,2)
@@ -128,7 +123,12 @@ def analysisText(text):
     except Exception as ex:
         print(ex)
 
-
-    return (symbol_count, symbol_count_2, word_count, letter_count,
-            word_count_2, word_count_3, word_count_4, water, ltn_count,
-            punctuation_count, classicText_nausea, academicianText_nausea)
+    return (('Общее количество символов',len(text)),
+            ('Общее количество символов (с пробелами)',symbol_count),
+            ('Общее количество символов (без пробелов)',symbol_count_2),
+            ('Общее количество букв',letter_count),
+            ('Количество иностранных слов',ltn_count),
+            ('Общее количество знаков пунктуации',punctuation_count),
+            ('Классическая тошнота документа',classicText_nausea),
+            ('Аккадемическая тошнота документа', academicianText_nausea),
+            ('Процент воды',water))
