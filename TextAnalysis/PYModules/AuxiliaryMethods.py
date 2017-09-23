@@ -1,4 +1,5 @@
 import re
+import cmath
 import pymorphy2 as pym
 
 #Метод принимает текст (который подлжежит анализу). И проверяет его корректность
@@ -94,14 +95,25 @@ def analysisText(text):
     #Количество стоп-слов
     word_count_4 = len(morphWords[1])
 
+    # Количество иностранных слов
+    ltn_count = len(morphWords[2])
+
     try:
         #Водность текста
         water = sum([len(words[mw]) for mw in morphWords[1]]) / sum([len(words[mw]) for mw in morphWords[0]]) * 100
     except ZeroDivisionError:
         water = 100
 
-    #Количество иностранных слов
-    ltn_count = len(morphWords[2])
 
+    #Количество знаков пунктуации
+    punctuation_count = len([x for x in text if re.match('[^\w\s\d]',x)])
 
-    return (symbol_count, symbol_count_2, word_count, letter_count, word_count_2, word_count_3, word_count_4, water, ltn_count)
+    #Классическая тошнота текста
+    classicText_nausea = round(cmath.sqrt(sorted([(x,len(words[x])) for x in morphWords[0]], key=lambda item: item[1], reverse=True)[0][1]).real,2)
+
+    #Академическая тошнота текста
+    academicianText_nausea = round(sorted([(x,len(words[x])) for x in morphWords[0]], key=lambda item: item[1], reverse=True)[0][1] / word_count * 100, 2)
+
+    return (symbol_count, symbol_count_2, word_count, letter_count,
+            word_count_2, word_count_3, word_count_4, water, ltn_count,
+            punctuation_count, classicText_nausea, academicianText_nausea)
