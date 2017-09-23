@@ -1,8 +1,9 @@
 import sys
 
 from PyQt5 import uic
-from PyQt5.QtWidgets import QApplication, QFileDialog
+from PyQt5.QtWidgets import QApplication, QFileDialog, QTableWidget, QTableWidgetItem, QGridLayout
 from PyQt5.QtGui import QPalette, QColor, QTextCursor, QStandardItemModel, QStandardItem
+from PyQt5.QtCore import Qt
 
 from PYModules.AuxiliaryMethods import *
 
@@ -40,28 +41,34 @@ def searchButton_click():
     detectedWords = {k:words[k] for k in searchWords.keys() if k in words.keys() }
 
 def textAnalysisButton_click():
-    print(analysisText(MainWindow.plainTextEdit.toPlainText()))
+    analysis = analysisText(MainWindow.plainTextEdit.toPlainText())
 
-    print('kykyk')
+    table = TextAnalysisWindow.tableWidget  # Создаём таблицу
+
+    table.setColumnCount(2)  # Устанавливаем три колонки
+    table.setRowCount(len(analysis))  # и одну строку в таблице
+
+    # Устанавливаем заголовки таблицы
+    table.setHorizontalHeaderLabels(["Параметры", "Значения"])
+
+    # заполняем таблицу
+    for i,item in enumerate(analysis):
+        parametr = QTableWidgetItem(item[0])
+        parametr.setFlags(Qt.ItemIsEditable)
+        table.setItem(i, 0, parametr)
+
+        value = QTableWidgetItem(str(item[1]))
+        value.setFlags(Qt.ItemIsEditable)
+        table.setItem(i, 1, value)
+
+
+    # делаем ресайз колонок по содержимому
+    table.resizeColumnsToContents()
+
+
+    #grid_layout.addWidget(table, 0, 0)  # Добавляем таблицу в сетку
+
     TextAnalysisWindow.show()
-    view = TextAnalysisWindow.columnView
-
-    model = QStandardItemModel()
-
-    try:
-        for groupnum in range(3):
-            group = QStandardItem("Group %s" %(groupnum))
-
-            for personnum in range(5):
-                child = QStandardItem("Person %s (group %s)"% (personnum, groupnum))
-
-                group.appendRow(child)
-
-            model.appendRow(group);
-
-        view.setModel(model)
-    except Exception as ex:
-        print(ex)
 
 
 #Подключение методов к кнопкам
