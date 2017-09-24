@@ -1,4 +1,6 @@
 import sys
+import matplotlib.pyplot as plt
+import numpy as np
 
 from PyQt5 import uic
 from PyQt5.QtWidgets import QApplication, QFileDialog, QTableWidget, QTableWidgetItem, QGridLayout
@@ -36,7 +38,6 @@ def searchButton_click():
     #Все слова текста
     words = getWordsFromString(analysisText)
 
-
     #Найденные слова
     detectedWords = {k:words[k] for k in searchWords.keys() if k in words.keys() }
 
@@ -61,36 +62,47 @@ def textAnalysisButton_click():
         value.setFlags(Qt.ItemIsEditable)
         table.setItem(i, 1, value)
 
-
     # делаем ресайз колонок по содержимому
     table.resizeColumnsToContents()
 
-
-    #grid_layout.addWidget(table, 0, 0)  # Добавляем таблицу в сетку
-
     TextAnalysisWindow.show()
 
+
+def graphicsTextAnalysisButton_click():
+    analysisText = MainWindow.plainTextEdit.toPlainText()
+    words = getWordsFromString(analysisText)
+    morphWords = getMorphWords(words)
+    t = sorted([(x,len(words[x])) for x in morphWords[0]], key=lambda x: x[1], reverse=True)
+    tmp = t[:5]
+
+    plt.close('all')
+
+    ax1 = plt.subplot2grid((2, 2), (0, 0))
+    ax2 = plt.subplot2grid((2, 2), (0, 1))
+    ax3 = plt.subplot2grid((2, 2), (1, 0))
+    ax4 = plt.subplot2grid((2, 2), (1, 1))
+
+    if len(tmp)>0:
+
+        ax1.bar(range(len(tmp)), [x[1] for x in tmp], width=0.5, tick_label=[x[0] for x in tmp])
+
+        x = np.arange(tmp[0][1], 0, 0.01)
+
+        ax2.pie([x[1] for x in tmp], labels=[x[0] for x in tmp], autopct='%1.1f%%')
+
+        ax3.plot(range(len(t)), [x[1] for x in t], range(len(t)),[x[1] for x in t], 'ro')
+
+        ax4.plot(x, x**2)
+
+    plt.tight_layout()
+
+    plt.show()
 
 #Подключение методов к кнопкам
 MainWindow.BrowseButton.clicked.connect(browseButton_click)
 MainWindow.searchButton.clicked.connect(searchButton_click)
 MainWindow.textAnalysisButton.clicked.connect(textAnalysisButton_click)
-
-"""
-p = MainWindow.plainTextEdit.palette()
-p.setColor(QPalette.Highlight, QColor('Red'))
-MainWindow.plainTextEdit.setPalette(p)
-
-c = MainWindow.plainTextEdit.textCursor()
-c.setPosition(5);
-c.setPosition(10, QTextCursor.KeepAnchor)
-MainWindow.plainTextEdit.setTextCursor(c);
-
-c = MainWindow.plainTextEdit.textCursor()
-c.setPosition(30);
-c.setPosition(40, QTextCursor.KeepAnchor)
-MainWindow.plainTextEdit.setTextCursor(c);
-"""
+MainWindow.graphicsTextAnalysisButton.clicked.connect(graphicsTextAnalysisButton_click)
 
 
 #Показ главного окна и старт приложения.
