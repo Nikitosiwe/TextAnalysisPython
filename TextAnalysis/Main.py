@@ -26,6 +26,8 @@ def browseButton_click():
 def searchButton_click():
     analysisText = MainWindow.plainTextEdit.toPlainText()
     searchText = MainWindow.searchLineEdit.text()
+    stopText = MainWindow.stopWordLineEdit.text()
+    print(stopText)
     if not checkAnalysisText(analysisText):
         return
     if not checkAnalysisText(searchText):
@@ -38,8 +40,12 @@ def searchButton_click():
     #Все слова текста
     words = getWordsFromString(analysisText)
 
+    #Стоп слова
+    #print()
+
     #Найденные слова
     detectedWords = {k:words[k] for k in searchWords.keys() if k in words.keys() }
+    print(detectedWords)
 
 def textAnalysisButton_click():
     analysis = analysisText(MainWindow.plainTextEdit.toPlainText())
@@ -70,9 +76,15 @@ def textAnalysisButton_click():
 
 def graphicsTextAnalysisButton_click():
     analysisText = MainWindow.plainTextEdit.toPlainText()
+    stopText = MainWindow.stopWordLineEdit.text()
     words = getWordsFromString(analysisText)
+    stopWords = getWordsFromString(stopText)
     morphWords = getMorphWords(words)
-    t = sorted([(x,len(words[x])) for x in morphWords[0]], key=lambda x: x[1], reverse=True)
+    segnifikentWords = list(set(morphWords[0])-set(stopWords.keys()))
+
+    #print(segnifikentWords)
+    #print(list(set(segnifikentWords)-set(stopWords.keys())))
+    t = sorted([(x,len(words[x])) for x in segnifikentWords], key=lambda x: x[1], reverse=True)
     tmp = t[:5]
 
     plt.close('all')
@@ -90,7 +102,7 @@ def graphicsTextAnalysisButton_click():
 
         ax2.pie([x[1] for x in tmp], labels=[x[0] for x in tmp], autopct='%1.1f%%')
 
-        ax3.plot(range(len(t)), [x[1] for x in t], range(len(t)),[x[1] for x in t], 'ro')
+        ax3.plot(range(len(tmp)), [x[1] for x in tmp], range(len(tmp)),[x[1] for x in tmp], 'ro')
 
         ax4.plot(x, x**2)
 

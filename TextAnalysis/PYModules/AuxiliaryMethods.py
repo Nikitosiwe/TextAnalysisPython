@@ -94,6 +94,7 @@ def analysisText(text):
 
     #Количество стоп-слов
     word_count_4 = len(morphWords[1])
+    print(morphWords[1])
 
     # Количество иностранных слов
     ltn_count = len(morphWords[2])
