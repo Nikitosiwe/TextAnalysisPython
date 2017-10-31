@@ -21,7 +21,8 @@ MainWindow.plainTextEdit.setPlainText('s dfh akjsdhfkajs dhfka sdkjfh aslkjdf ha
 
 #Методы нажатия соответствующих кнопок
 def browseButton_click():
-    pass
+    analysisText = MainWindow.plainTextEdit.toPlainText()
+    words = getWordsFromString(analysisText)
 
 def searchButton_click():
     analysisText = MainWindow.plainTextEdit.toPlainText()
@@ -84,7 +85,11 @@ def graphicsTextAnalysisButton_click():
 
     #print(segnifikentWords)
     #print(list(set(segnifikentWords)-set(stopWords.keys())))
-    t = sorted([(x,len(words[x])) for x in segnifikentWords], key=lambda x: x[1], reverse=True)
+    print(segnifikentWords)
+
+    t = sorted(
+        [(x,len(words[x])) for x in segnifikentWords]
+        , key=lambda x: x[1], reverse=True)
     tmp = t[:5]
 
     plt.close('all')
