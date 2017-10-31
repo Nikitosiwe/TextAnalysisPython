@@ -13,6 +13,7 @@ def checkAnalysisText(text):
             return False
     else:
         print("checkAnalysisText - Это не текст")
+        return False
 
 
 #Метод разбивает строку на слова и возвращает словарь найденых слов с их индексами в строке
@@ -26,7 +27,7 @@ def getWordsFromString(text):
 
     tmp ={}
     for m in re.finditer('[\W|\s]?(\w+)[\W|\s]?', text):
-        print(m)
+        #print(m)
         w = temp((m.start(0), m.end(0), m.group(0)))
         if w[2] in tmp.keys():
             tmp[w[2]].append((w[0],w[1]))
